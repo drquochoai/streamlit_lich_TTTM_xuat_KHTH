@@ -92,10 +92,34 @@ def xuat(tenFileDeXuatHienTai):
         st.markdown("rename columns to name_KHTH of filtered_PK_theo_KHTH")
         st.write(all_CLS_data)
     # END 2
+    # AI 2.9: --START rearrange all_CLS_data columns from column 3 to the order of SETTINGS["thuTuPhongCanLamSang"]
+    # Get the desired column order from SETTINGS
+    desired_order = SETTINGS["thuTuHoiChanBV"]
+
+    # Get the current columns of the DataFrame
+    current_columns = all_CLS_data.columns.tolist()
+
+    # Split columns into:
+    # 1. Columns before index 3 (unchanged)
+    # 2. Columns from index 3 onward (to be reordered)
+    fixed_columns = current_columns[:3]  # Keep first 3 columns as-is
+    columns_to_reorder = current_columns[3:]  # Columns to rearrange
+
+    # Reorder columns_to_reorder based on desired_order
+    # (Only keep columns that exist in both lists)
+    reordered_columns = [col for col in desired_order if col in columns_to_reorder]
+
+    # Combine fixed columns + reordered columns + any remaining columns not in desired_order
+    final_columns = fixed_columns + reordered_columns + [
+        col for col in columns_to_reorder if col not in desired_order
+    ]
+    # Apply the new column order to the DataFrame
+    all_CLS_data = all_CLS_data[final_columns]
 
     if showStep:
-        st.markdown("Rearranged columns based on SETTING['thuTuPhongOncallVip']")
+        st.markdown("Rearranged columns based on SETTING['thuTuHoiChanBV']")
         st.write(all_CLS_data)
+    # END 2.9
     # END 2.9
     
     # AI 4: remove row  where "Giờ" is "Tr" in lowercase and reindex all_CLS_data

@@ -45,13 +45,20 @@ SETTINGS = {
         "SIÊU ÂM TIM VIP 2",
         "SIÊU ÂM TIM VIP 3"
     ],
-    "thuTuPhongOncall":[
+    "thuTuPhongOncall": [
         "Tim mạch (Oncall)"
     ],
     "thuTuPhongOncallVip": [
         "PK. NỘI TIM MẠCH NHI 9001",
         "PK. TIM MẠCH 9002",
         "PK NGOẠI TIM MẠCH"
+    ],
+    "thuTuHoiChanBV": [
+        "Hội chẩn trước mổ (Ca ngày)",
+        "Hội chẩn trước mổ (Ca đêm)",
+        "Hội chẩn chuyên khoa (Ca ngày)",
+        "Hội chẩn chuyên khoa (Ca đêm)",
+        "TIM MẠCH NHI"
     ],
     "name_of_exported_file": "exported_by_drquochoai",
     "column_name_thongKe": {

@@ -109,9 +109,6 @@ def xuat(tenFileDeXuatHienTai):
     final_columns = fixed_columns + reordered_columns + [
         col for col in columns_to_reorder if col not in desired_order
     ]
-    if showStep:
-        st.markdown("Rearranged columns based on SETTINGS['thuTuPhongCanLamSang']")
-        st.write(final_columns)
     # Apply the new column order to the DataFrame
     all_CLS_data = all_CLS_data[final_columns]
 
