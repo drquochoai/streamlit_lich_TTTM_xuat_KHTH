@@ -1,5 +1,5 @@
 SETTINGS = {
-    "workingWithDemo": True,
+    "workingWithDemo": False,
     "cauTrucCotFilePhongKhamGuiKHTH": [
         {
             "col": "Chi nhánh",
