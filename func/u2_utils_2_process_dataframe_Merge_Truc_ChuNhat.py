@@ -52,7 +52,7 @@ def process_dataframe_Merge_Truc_co_SangChieu(df, name_of_column="TenBS"):
         else:
             merged_tenbs = tenbs_s + "; " + tenbs_c # Join C first then S, if both exist
         if not tenbs_c: # If no "C", but has "S" (unlikely case based on problem description, but handle it)
-            merged_tenbs = ";".join(tenbs_s)
+            merged_tenbs = tenbs_s
 
         # Prioritize row with "Giờ" as "C" if exists, otherwise take first row (should have "S" in unlikely case)
         row_c = group[group["Giờ"] == "C"]

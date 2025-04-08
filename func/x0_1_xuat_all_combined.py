@@ -10,6 +10,7 @@ import func.x2_xuat_12_Lich_can_lam_sang_MERGE_THEO_COT as x2_xuat_12_Lich_can_l
 import func.x4_xuat_14_Lich_Oncall_VIP____ as x4_xuat_14_Lich_Oncall_VIP
 import func.x1_x11_lich_truc_benh_vien_CODE_BLUE as x1_x11_lich_truc_benh_vien_CODE_BLUE
 import func.x1_x11_lich_truc_benh_vien_TRUC as x1_x11_lich_truc_benh_vien_TRUC
+import func.x1_x11_lich_truc_benh_vien_HOI_CHAN as x1_x11_lich_truc_benh_vien_HOI_CHAN
 def xuat_all_combined():
     """ loop through st.session_state.ten_PK_theo_KHTH_unique
         check of checkbox is checked or not
@@ -47,6 +48,9 @@ def xuat_all_combined():
 
             elif tenFileDeXuatHienTai.startswith("1.1 Lịch trực Bệnh viện>TRỰC"):
                 x1_x11_lich_truc_benh_vien_TRUC.xuat(tenFileDeXuatHienTai)
+
+            elif tenFileDeXuatHienTai.startswith("1.1 Lịch trực Bệnh viện>HỘI CHẨN"):
+                x1_x11_lich_truc_benh_vien_HOI_CHAN.xuat(tenFileDeXuatHienTai)
 
     st.switch_page("pages/1_🪙💛Thống_kê.py")
     
