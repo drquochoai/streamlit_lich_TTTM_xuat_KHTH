@@ -1,5 +1,3 @@
-from tokenize import Ignore
-from turtle import onclick
 import pandas as pd
 import streamlit as st
 import tempfile
