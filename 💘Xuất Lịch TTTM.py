@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from func.o1_help_ten_PK_theo_KHTH import xuLyTenDanhSachPK
-from func.x1_xuat_phong_kham_Noi_Ngoai_TM import xuatPhongKham
+
 from SETTINGS_FOR_ALL import SETTINGS
 
 st.set_page_config(
@@ -11,6 +11,7 @@ st.set_page_config(
 
 
 # LOAD STYLE CSS
+from func.u1_utils_clear_CACHE_RERUN import clear_cache_rerun
 from streamlitGUI.s1_style_load import local_css
 local_css("streamlitGUI/s1_style_load_streamlit.css")
 
@@ -33,8 +34,10 @@ xuLyTenDanhSachPK(st.session_state.full_lich)
 # CÓ FILE EXCEL RỒI, BÂY GIỜ hiển thị các sheet names trong file excel dạng dropdown
 # st.write(st.session_state)
 from streamlitGUI.p1_load_sheetNames_of_excel_gui import load_sheet_names_of_excel
-load_sheet_names_of_excel()
-
+try:
+    load_sheet_names_of_excel()
+except KeyError as e:
+    clear_cache_rerun()
 # load trang chủ streamlit
 from streamlitGUI.o1_0_homepage_gui import trangchu
 trangchu()
