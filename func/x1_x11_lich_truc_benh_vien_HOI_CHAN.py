@@ -162,6 +162,16 @@ def xuat(tenFileDeXuatHienTai):
     # AI 7: drop column "Giờ"
     all_CLS_data = all_CLS_data.drop(columns=["Giờ"])
     # AI final - add all_CLS_data to st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"]
+
+    # replace text of value in column "TIM MẠCH NHI": if text context string "Ngày", change to "Sáng", "Đêm" to "Chiều"
+    all_CLS_data["TIM MẠCH NHI"] = all_CLS_data["TIM MẠCH NHI"].apply(
+        lambda x: x.replace("Ngày: Bs.", "Sáng:").replace("Đêm: Bs.", "Chiều:") if isinstance(x, str) else x
+    )
+    # all_CLS_data["TIM MẠCH NHI"] = all_CLS_data["TIM MẠCH NHI"].replace({"Ngày": "Sáng", "Đêm": "Chiều"})
+    if showStep:
+        # st.table(all_CLS_data[[all_CLS_data.columns[0], all_CLS_data.columns[1], all_CLS_data.columns[2], tenPKCuaKHTH]])
+        st.write('8 replace text of value in column "TIM MẠCH NHI": "Ngày" to "Sáng", "Đêm" to "Chiều"', all_CLS_data)
+
     st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = all_CLS_data
     if showStep:
         st.write(f"✅Xuất xong: {tenFileDeXuatHienTai}✅")

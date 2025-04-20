@@ -129,6 +129,14 @@ def xuat(tenFileDeXuatHienTai):
         insert_pos = 4 + (offset * 2)
         # all_CLS_data.columns._set_name(f"Mã BS", allow_duplicates=True)  # Risky!
         all_CLS_data.insert(insert_pos, "Mã BS "+ col_name, "")
+        # if row of col_name value is not blank, set value of column "Mã BS" to value of st.session_state["ten_"] get row of col_name value
+        try:
+            all_CLS_data["Mã BS " + col_name] = all_CLS_data.apply(
+            lambda row: st.session_state["ten_danhSachBS"][row[col_name]] if str(row[col_name]).strip() != "" else "",
+            axis=1
+        )
+        except KeyError:
+            st.warning(f"KeyError: {col_name} not found in st.session_state['ten_danhSachBS']")        
         
     if showStep:
         st.markdown("add on the right of each column a new column name Mã BS, value is blank string")
@@ -137,117 +145,8 @@ def xuat(tenFileDeXuatHienTai):
     
     # AI final - add all_CLS_data to st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"]
     st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = all_CLS_data
-    # for pk in range(0, len(filtered_PK_theo_KHTH)):
-    #     # 7.1. Lấy dữ liệu từ selected_sheet_name
-    #     # st.write("st.session_state.full_lich", st.session_state.full_lich)
-    #     sheet = st.session_state.full_lich[st.session_state.selected_sheet_name]
-    #     if showStep:
-    #         st.write("7.1. Lấy dữ liệu từ selected_sheet_name", sheet)
-    #     # 7.2. Lấy cột tên phòng khám
-    #     # get column name of sheet = ten_PK_theo_KHTH_dict[pk]['name'];
-    #     # Exg: PK TM 1 (6h-7h. 7h-16h)(nghỉ 11-12h) ; PK TM 2- suy tim (Bs 6-7h đọc thêm ecg)/nghỉ trua 12-13h
-    #     # st.write("filtered_PK_theo_KHTH", filtered_PK_theo_KHTH)
-    #     tenPKTheoLich = filtered_PK_theo_KHTH[pk]['name']
-    #     tenPKCuaKHTH = filtered_PK_theo_KHTH[pk]['name_KHTH']
-    #     if showStep:
-    #         st.write("tenPKTheoLich: ", tenPKTheoLich,
-    #                  "tenPKCuaKHTH: ", tenPKCuaKHTH)
-    #     try:
-    #         # 7.3 Lấy cột bác sĩ, của phòng khám từ sheetLichThang
-    #         dataDanhSachBacSi = sheetLichThang[tenPKTheoLich]
 
-    #         # 7.3.1 ngayUnique = sheetLichThang["Ngày"] không dupicated: mục đích để 1 lát merge ra 1 file theo ngày này để tên bác sĩ map đúng ngày, ngày nào k có tên bác sĩ thì sẽ để tên bs trống. Chỉ áp dụng cho file có 1 ngày thôi
-    #         # ngayUnique = sheetLichThang["Ngày"].unique()
-    #         # st.write("ngayUnique", ngayUnique)
 
-    #         # 7.4 merge dataDanhSachBacSi with first 4 columns of sheetLichThang
-    #         merged_data_1_phongkham = pd.concat(
-    #             [sheetLichThang.iloc[:, 0:4], dataDanhSachBacSi], axis=1)
-    #         if showStep:
-    #             st.write(
-    #                 "7.4 merge dataDanhSachBacSi with first 4 columns of sheetLichThang", merged_data_1_phongkham)
-
-    #         """ 7.5 Drop row Ten bác sĩ have value is str: "nan" in merged_data_1_phongkham, do not use dropna function
-    #         """
-    #         # merged_data_1_phongkham = merged_data_1_phongkham[
-    #         #     ~merged_data_1_phongkham[tenPKTheoLich].astype(str).str.fullmatch(r"nan")
-    #         # ]
-    #         # if showStep:
-    #         #     st.write("7.5 Drop row have value is str", merged_data_1_phongkham)
-
-    #         # 7.6 merged_data_1_phongkham: Chỉ áp dụng cho file có 1 ngày thôi
-    #         # Remove duplicate rows of column "Ngày"
-    #         # keep first row where column ~[tenPKTheoLich].astype(str).str.fullmatch(r"nan")
-    #         # First, filter out rows where tenPKTheoLich is "nan"
-    #         # merged_data_1_phongkham = merged_data_1_phongkham.drop_duplicates(subset=["Ngày"], keep="first")
-    #         # if showStep:
-    #         #     st.write(" 7.6 Remove duplicate rows keep first", merged_data_1_phongkham)
-
-    #         # 7.6.1 convert column "Ngày" to datetime format
-    #         merged_data_1_phongkham["Ngày"] = pd.to_datetime(
-    #             merged_data_1_phongkham["Ngày"], format="mixed", errors="coerce")
-    #         if showStep:
-    #             st.write('7.6.1 convert column "Ngày" to datetime format',
-    #                      merged_data_1_phongkham)
-
-    #         # 7.7 merged_data_1_phongkham to ngayUnique, keep all ngayUnique row, mapping  "Ngày" column
-    #         # Create a DataFrame from ngayUnique as datetime
-    #         # ngayUnique = pd.to_datetime(ngayUnique, format="mixed", errors="coerce")
-    #         # ngay_df = pd.DataFrame({"Ngày": ngayUnique})
-    #         # if showStep:
-    #         #     st.write("ngay_df", ngay_df)
-    #         # Merge with merged_data_1_phongkham on "Ngày" using a left join
-    #         # This keeps all dates in ngayUnique and maps the corresponding data
-    #         # merged_data_1_phongkham = pd.merge(ngay_df, merged_data_1_phongkham, on="Ngày", how="left")
-
-    #         # Reset the index of the merged DataFrame
-    #         # merged_data_1_phongkham.reset_index(drop=True, inplace=True)
-
-    #         # # Display the result after mapping to ngayUnique
-    #         # if showStep:
-    #         #     st.write("7.7 mapped to ngayUnique", merged_data_1_phongkham)
-    #         # --END-- 7.7 merge theo ngayUnique
-
-    #         # 7.7 drop column "S" and "Giờ"
-    #         merged_data_1_phongkham = merged_data_1_phongkham.drop(columns=[
-    #                                                                "S"])
-    #         if showStep:
-    #             st.write("7.7 drop column S and Giờ", merged_data_1_phongkham)
-    #         # 7.8 move column "Thứ" to first column
-    #         # merged_data_1_phongkham = merged_data_1_phongkham[["Thứ"] + [col for col in merged_data_1_phongkham.columns if col != "Thứ"]]
-
-    #         # # 7.9 if column "Thứ" is empty, fillna with "CN"
-    #         # merged_data_1_phongkham["Thứ"] = merged_data_1_phongkham["Thứ"].fillna(
-    #         #     "CN")
-            
-    #         # 7.10 rename column tenPKTheoLich to tenPKCuaKHTH
-    #         merged_data_1_phongkham = merged_data_1_phongkham.rename(
-    #             columns={tenPKTheoLich: tenPKCuaKHTH})
-    #         # 7.11 merged_data_1_phongkham[tenPKCuaKHTH] replace value "nan" of column to "", do not use drop nan function
-    #         merged_data_1_phongkham[tenPKCuaKHTH] = merged_data_1_phongkham[tenPKCuaKHTH].apply(
-    #             lambda x: "" if isinstance(x, str) and x.strip() == "nan" else x
-    #         )
-
-    #         if showStep:
-    #             st.write("7.11 replace value nan of column to space, do not use drop nan function",
-    #                      merged_data_1_phongkham)
-
-    #         # 7.11 MERGE INTO ONE add to master mother sheet, Theo cột !!
-    #         # Set "Thứ" and "Ngày" as index for both DataFrames before concatenation
-    #         st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"].merge(
-    #             merged_data_1_phongkham,
-    #             on=["Thứ", "Giờ", "Ngày"],
-    #             how="right"
-    #         )
-    #         if showStep:
-    #             st.write(" 7.11 MERGE INTO ONE add to master mother sheet, Theo cột !!", st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"])
-
-    #     except KeyError as e:
-    #         st.warning(
-    #             f"Không tìm thấy cột {tenPKTheoLich} trong sheet {st.session_state.selected_sheet_name}")
-    #         st.warning(e)
-    #         st.write(sheetLichThang[tenPKTheoLich])
-    #         continue
     st.write(f"✅Xuất xong: {tenFileDeXuatHienTai}✅")
     st.table(st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"])
 

@@ -8,7 +8,7 @@ def xuat(tenFileDeXuatHienTai):
         Để riêng 1 sheet
     """
     # Hiển thị từng bước của các phép tính, cho debug dễ hơn
-    showStep= False
+    showStep= True
     # 1. Tạo biến mẹ chứa toàn bộ dữ liệu để xuất
     st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = pd.DataFrame()
 
@@ -116,7 +116,38 @@ def xuat(tenFileDeXuatHienTai):
             # 7.11 filte nan of column tenPKCuaKHTH to ""
             merged_data_1_phongkham[tenPKCuaKHTH] = merged_data_1_phongkham[tenPKCuaKHTH].fillna("")
             if showStep:
-                st.write("7.8 move column Thứ to first column", merged_data_1_phongkham)
+                st.write("7.11 move column Thứ to first column", merged_data_1_phongkham)
+
+            # 7.11.1 add new Ma BS column
+            # AI 3 from columns 4 of all_CLS_data: add on the right of each column a new column name Mã BS, value is blank string 
+            num_cols = len(merged_data_1_phongkham.columns)
+            # We need to process the original columns only, so we'll:
+            # 1. Get the original column names up front
+            start_col = 2  # Start from the 3rd column (index 2)
+            original_columns = merged_data_1_phongkham.columns[start_col:num_cols].tolist()
+            # 2. Use enumerate to track our position as we insert
+            for offset, col_name in enumerate(original_columns):
+                # Calculate position: start at 4 (3+1), then add 2 for each column we've processed
+                # because each insertion shifts positions by 1
+                insert_pos = start_col+1 + (offset * 2)
+                # all_CLS_data.columns._set_name(f"Mã BS", allow_duplicates=True)  # Risky!
+                merged_data_1_phongkham.insert(insert_pos, "Mã BS "+ col_name, "")
+                # if row of col_name value is not blank, set value of column "Mã BS" to value of st.session_state["ten_"] get row of col_name value
+                try:
+                    merged_data_1_phongkham["Mã BS " + col_name] = merged_data_1_phongkham.apply(
+                    lambda row: st.session_state["ten_danhSachBS"][row[col_name]] if str(row[col_name]).strip() != "" else "",
+                    axis=1
+                )
+                except KeyError:
+                    st.warning(f"KeyError: {col_name} not found in st.session_state['ten_danhSachBS']")        
+                
+            if showStep:
+                st.markdown("7.11.1 add on the right of each column a new column name Mã BS, value is blank string")
+                st.write(merged_data_1_phongkham)
+            # END 3
+
+
+
             # 7.12 add to master mother sheet
             st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = pd.concat([st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"], merged_data_1_phongkham], axis=0)
             if showStep:
