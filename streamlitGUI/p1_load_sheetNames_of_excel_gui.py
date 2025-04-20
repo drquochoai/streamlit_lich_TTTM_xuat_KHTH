@@ -6,6 +6,7 @@ from func.x0_1_xuat_all_combined import xuat_all_combined
 from streamlitGUI.s1_style_load import add_click_button
 from func.u1_utils_clear_CACHE_RERUN import clear_cache_rerun
 
+
 def load_sheet_names_of_excel():
     """
     """
@@ -17,11 +18,18 @@ def load_sheet_names_of_excel():
     with col2:
         add_click_button(SETTINGS['url']['downloadFull'], "Tải file")
     with col3:
-        st.button("RELOAD EXCEL", on_click= lambda: clear_cache_rerun(), type="primary", icon=":material/frame_reload:" )
+        st.button("RELOAD EXCEL", on_click=lambda: clear_cache_rerun(),
+                  type="primary", icon=":material/frame_reload:")
 
-    
-    sheet_names_only = [name for name in st.session_state.sheet_names if name.lower(
-    ).startswith("tháng") and "$" not in name.lower()]
+    sheet_names_only = []
+    if "sheet_names" in st.session_state:
+        # st.write(st.session_state)
+        for name in st.session_state.sheet_names:
+            if name.lower().startswith("tháng") and "$" not in name.lower():
+                sheet_names_only.append(name)       
+    else: 
+        clear_cache_rerun()
+
     # sheet_names_only = [name for name in st.session_state.sheet_names if name.lower().startswith("tháng") or name.lower().startswith("template")]
     # st.write(sheet_names_only)
     # dropdown select with searchable : st.session_state.sheet_names
@@ -42,10 +50,17 @@ def load_sheet_names_of_excel():
         # st.write(st.session_state.ten_PK_theo_KHTH_unique)
         # Split the list into chunks of 4 items each
         chunk_size = 3
-        ten_PK_chunks = [st.session_state.ten_PK_theo_KHTH_unique[i:i + chunk_size]
-                         for i in range(0, len(st.session_state.ten_PK_theo_KHTH_unique), chunk_size)]
-
+        ten_PK_chunks= []
+        if "ten_PK_theo_KHTH_unique" in st.session_state:
+            ten_PK_chunks = [st.session_state.ten_PK_theo_KHTH_unique[i:i + chunk_size]
+                            for i in range(0, len(st.session_state.ten_PK_theo_KHTH_unique), chunk_size)]
+        else:
+            clear_cache_rerun()
         # Distribute chunks to columns
+        if len(ten_PK_chunks) == 0:
+            st.warning("Không có phòng khám nào để xuất")
+            clear_cache_rerun()
+            return
         for i, chunk in enumerate(ten_PK_chunks):
             target_col = [col1, col2, col3][i % 3]  # Rotates through columns
             with target_col:
