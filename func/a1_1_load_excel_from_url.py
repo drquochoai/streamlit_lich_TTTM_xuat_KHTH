@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-
+@st.cache_data
 def load_excel_data_from_url(url):
     excel_file = pd.ExcelFile(url)
     st.session_state.sheet_names = excel_file.sheet_names  # Store the sheet names in session state.

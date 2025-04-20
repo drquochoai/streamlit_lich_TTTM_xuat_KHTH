@@ -27,7 +27,8 @@ st.session_state.full_lich = load_excel_data_from_url(url)
 # ten_PK_theo_KHTH = get sheet "🏥Tên PK theo KHTH" from the full_lich
 # st.write(full_lich)
 xuLyTenDanhSachPK(st.session_state.full_lich)
-
+from func.o2_help_ten_DanhSach_BS_tu_excel import xuLyTenDanhSachBS
+xuLyTenDanhSachBS(st.session_state.full_lich)
 
 # xuatPhongKham(st.session_state.full_lich, "Tháng 5-2025")
 

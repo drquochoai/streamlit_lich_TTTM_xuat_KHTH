@@ -52,5 +52,5 @@ def xuat_all_combined():
             elif tenFileDeXuatHienTai.startswith("1.1 Lịch trực Bệnh viện>HỘI CHẨN"):
                 x1_x11_lich_truc_benh_vien_HOI_CHAN.xuat(tenFileDeXuatHienTai)
 
-    st.switch_page("pages/1_🪙💛Thống_kê.py")
+    # st.switch_page("pages/1_🪙💛Thống_kê.py")
     

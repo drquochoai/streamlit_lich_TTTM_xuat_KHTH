@@ -4,6 +4,7 @@ from func.o1_help_ten_PK_theo_KHTH import xuLyTenDanhSachPK
 from SETTINGS_FOR_ALL import SETTINGS
 from func.x1_u1_filtered_PK_theoyeucau import filtered_PK_theo_ten_file_KHTH
 
+
 def xuatPhongKham(tenFileDeXuatHienTai):
     """ 
         Hàm mẹ gọi tenPKHienTai
@@ -19,11 +20,10 @@ def xuatPhongKham(tenFileDeXuatHienTai):
     # st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = pd.DataFrame()
 
     # 2.     # 2. Lấy tên các Cột (Phòng Khám) trong lịch, tương ứng với tên file theo KHTH tenFileDeXuatHienTai  = Lọc các hàng nào trong st.session_state.ten_PK_theo_KHTH_dict có file_sheet_name bằng với tenPKHienTai
-    filtered_PK_theoyeucau = filtered_PK_theo_ten_file_KHTH(tenFileDeXuatHienTai)
+    filtered_PK_theoyeucau = filtered_PK_theo_ten_file_KHTH(
+        tenFileDeXuatHienTai)
     # st.write("filtered_PK_theoyeucau", filtered_PK_theoyeucau)
 
-    
-    
     # 3. Lấy sheet lịch tháng
     # get sheet column in full_lich with sheetName = sheetName
     # st.write("st.session_state.full_lich test", st.session_state.full_lich)
@@ -46,7 +46,7 @@ def xuatPhongKham(tenFileDeXuatHienTai):
                 if pd.isna(sheetLichThang.iloc[j, i]):
                     sheetLichThang.iloc[j, i] = sheetLichThang.iloc[j-1, i]
     # st.table(sheetLichThang.iloc[:, 0:4])
-    
+
     # Hàm để tính cột Từ giờ, Đến giờ trong lịch
     def calculate_timestring(row):
         time_key = "time_" + row["timecode"]
@@ -60,12 +60,20 @@ def xuatPhongKham(tenFileDeXuatHienTai):
             # Để riêng 1 sheet
             return [0, 24]
         elif "-" in timestring:
-            val1,val2 = timestring.split("-")
+            val1, val2 = timestring.split("-")
             # oneline return if val1.isdigit(): int(val1) else val1 and val2 same
             return [int(val1) if val1.isdigit() else val1, int(val2) if val2.isdigit() else val2]
         else:
             return ["0*error", "0*error"]
-    
+
+    # Hàm mapping Tên bác sĩ với mã bác sĩ
+    def map_bacsi(row):
+        # st.write("row", row)
+        ten_bac_si = row["Họ Tên Bác sĩ"]
+        # get value of "MSVN" in ten_danhSachBS
+        msvn = st.session_state.ten_danhSachBS[ten_bac_si]
+        print("map_bacsi", st.session_state.ten_danhSachBS[ten_bac_si])
+        return msvn
     # 6. BIẾN LƯU TRỮ DỮ LIỆU TOÀN BỘ PK XUẤT RA
     merged_data_ALL_phongkham = pd.DataFrame()
 
@@ -94,13 +102,15 @@ def xuatPhongKham(tenFileDeXuatHienTai):
             # dataDanhSachBacSi = dataDanhSachBacSi[~dataDanhSachBacSi.astype(str).str.contains("nan")]
             """ merge dataDanhSachBacSi with first 4 columns of sheetLichThang
             """
-            merged_data_1_phongkham = pd.concat([sheetLichThang.iloc[:, 0:4], dataDanhSachBacSi], axis=1)
-            
+            merged_data_1_phongkham = pd.concat(
+                [sheetLichThang.iloc[:, 0:4], dataDanhSachBacSi], axis=1)
+
             """ Drop row have value is str: "nan" in merged_data_1_phongkham, do not use dropna function
             """
             # st.write(merged_data_1_phongkham[tenPKTheoLich])
             merged_data_1_phongkham = merged_data_1_phongkham[
-                ~merged_data_1_phongkham[tenPKTheoLich].astype(str).str.fullmatch(r"nan")
+                ~merged_data_1_phongkham[tenPKTheoLich].astype(
+                    str).str.fullmatch(r"nan")
             ]
             # st.write(merged_data_1_phongkham)
             """ 
@@ -127,23 +137,25 @@ def xuatPhongKham(tenFileDeXuatHienTai):
                             """
                         elif col_name == "Họ Tên Bác sĩ":
                             merged_data_1_phongkham[col_name] = merged_data_1_phongkham[tenPKTheoLich]
-                            
+
                             """
                             Xử lý cột Ngày:
                                 - Là ngày ở cột Ngày
 
                             """
                         elif col_name == "Ngày":
-                            oldNgay = pd.to_datetime(merged_data_1_phongkham["Ngày"])
-                            merged_data_1_phongkham[col_name] = oldNgay 
-                        
+                            oldNgay = pd.to_datetime(
+                                merged_data_1_phongkham["Ngày"])
+                            merged_data_1_phongkham[col_name] = oldNgay
+
                         elif col_name == "Từ giờ":
                             """
                             timecode = get value of "Giờ" in merged_data_1_phongkham[col_name] to lowercase
                             timestring = get value of that ten_PK_theo_KHTH_dict[i]["time_"+timecode ]
                                 split timestring by "-" and get first value
                             """
-                            timecode = merged_data_1_phongkham["Giờ"].str.lower()
+                            timecode = merged_data_1_phongkham["Giờ"].str.lower(
+                            )
                             merged_data_1_phongkham["timecode"] = timecode
                             # create new column "timestring" in merged_data_1_phongkham with function to calculate base on timecode
 
@@ -154,7 +166,14 @@ def xuatPhongKham(tenFileDeXuatHienTai):
                             merged_data_1_phongkham[col_name] = merged_data_1_phongkham.apply(
                                 lambda row: calculate_timestring(row)[1], axis=1
                             )
-                            
+
+                        elif col_name == "Mã Bác sĩ":
+                            # set value of column "Mã Bác sĩ" = value of "Họ Tên Bác sĩ" in dictionary st.session_state.ten_danhSachBS[ten_bac_si] as number
+                            merged_data_1_phongkham[col_name] = merged_data_1_phongkham["Họ Tên Bác sĩ"].apply(
+                                lambda ten: int(st.session_state.ten_danhSachBS.get(ten, 0))
+                            )
+                                
+
                         else:
                             # check if col_name is in merged_data_1_phongkham.columns
                             # if not, create column with name = col_name
@@ -162,26 +181,23 @@ def xuatPhongKham(tenFileDeXuatHienTai):
                                 merged_data_1_phongkham[col_name] = ""
 
             # in merged_data_1_phongkham, drop columns: timecode, Unnamed: 0, Thứ, Ngày
-            merged_data_1_phongkham = merged_data_1_phongkham.drop(columns=["timecode", "Unnamed: 0", "Thứ", "Ngày", "Giờ", tenPKTheoLich, "S"], errors="ignore")
-            
+            merged_data_1_phongkham = merged_data_1_phongkham.drop(
+                columns=["timecode", "Unnamed: 0", "Thứ", "Ngày", "Giờ", tenPKTheoLich, "S"], errors="ignore")
+
             # merged_data_1_phongkham remove row have value in column "Tu giờ" = "0*error" or "0"
-            merged_data_1_phongkham = merged_data_1_phongkham[~merged_data_1_phongkham["Từ giờ"].astype(str).str.contains("0*error|0")]
+            merged_data_1_phongkham = merged_data_1_phongkham[~merged_data_1_phongkham["Từ giờ"].astype(
+                str).str.contains("0*error|0")]
 
             # merge tin to merged_data_ALL_phongkham
-            merged_data_ALL_phongkham = pd.concat([merged_data_ALL_phongkham, merged_data_1_phongkham], axis=0)
-            
+            merged_data_ALL_phongkham = pd.concat(
+                [merged_data_ALL_phongkham, merged_data_1_phongkham], axis=0)
+
             # st.write(f"merged_data_1_phongkham {tenPKTheoLich}", merged_data_1_phongkham)
         except:
             continue
-        # 
-    st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = merged_data_ALL_phongkham    
+        #
+    st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = merged_data_ALL_phongkham
     # st.write(f"merged_data_ALL_phongkham {tenPKTheoLich}", merged_data_ALL_phongkham)
     st.write(f"✅Xuất xong: {tenFileDeXuatHienTai}✅")
-    
 
 
-    
-
-if __name__ == "__main__":
-    url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHqvn0zlpmiuXOkf7jdH75iKugE-ZF2rvNT_Qq-xogt8i8LaXkVwur-8cpl10VJZlzd_0vfZa8yBe4/pub?output=xlsx'
-    xuatPhongKham("url, Tháng 5-2025")

@@ -22,7 +22,7 @@ def load_url_theo_demo():
         st.toast("Tải file Demo...")
     else:
         url = SETTINGS.get("url", {}).get("downloadFull")
-        st.toast("Tải file 💥🏡🏡Lịch làm việc Trung Tâm Tim Mạch...")
+        st.toast("...💥🏡🏡Lịch TTTM...")
     st.session_state.url = url
     return url
 

@@ -15,7 +15,12 @@ SETTINGS = {
         {"col": "Họ Tên Bác sĩ"},
         {"col": "Ngày"},
         {"col": "Từ giờ"},
-        {"col": "Đến giờ"}
+        {"col": "Đến giờ"},
+        {"col": "Mã Bác sĩ"},
+        {
+            "col": "Site",
+            "value": "Tâm Anh Tân Bình"
+        },
     ],
     "url": {
         "downloadFull": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTixq1k6_nQ7QVOnD5y2o_Ods5IC5LSA-iiVPs7qBFC5JcLizUkxp-oCTiSWhDQfGSSc7jodXnOYOIl/pub?output=xlsx",
@@ -25,6 +30,7 @@ SETTINGS = {
     },
     "sheetName": {
         "phongKham": "🏥Tên PK theo KHTH",
+        "danhSachBacSi": "✅Danh sách Bác sĩ (dropdown)",
     },
     "thuTuPhongCanLamSang": [
         "SIÊU ÂM TIM - MẠCH MÁU 1",
@@ -54,10 +60,10 @@ SETTINGS = {
         "PK NGOẠI TIM MẠCH"
     ],
     "thuTuHoiChanBV": [
-        "Hội chẩn trước mổ (Ca ngày)",
-        "Hội chẩn trước mổ (Ca đêm)",
-        "Hội chẩn chuyên khoa (Ca ngày)",
-        "Hội chẩn chuyên khoa (Ca đêm)",
+        "Hội chẩn trước mổ Ca ngày",
+        "Hội chẩn trước mổ Ca đêm",
+        "Hội chẩn chuyên khoa Ca ngày",
+        "Hội chẩn chuyên khoa Ca đêm",
         "TIM MẠCH NHI"
     ],
     "name_of_exported_file": "exported_by_drquochoai",
