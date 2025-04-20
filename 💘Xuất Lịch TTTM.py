@@ -5,7 +5,7 @@ from func.o1_help_ten_PK_theo_KHTH import xuLyTenDanhSachPK
 from SETTINGS_FOR_ALL import SETTINGS
 
 st.set_page_config(
-    page_title="Xuất file lịch TTTM",
+    page_title="Xuất file lịch TTTM - 20.04.2025",
     page_icon="👋",
 )
 
