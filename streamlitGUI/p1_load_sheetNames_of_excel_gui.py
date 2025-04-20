@@ -54,12 +54,12 @@ def load_sheet_names_of_excel():
         # Submit button to process the form
         submit_button = st.form_submit_button(label="Xuất file")
         # st.write(st.session_state)
-    if submit_button:
-        # st.write(st.session_state.cb_export_lich_PK)
-        st.spinner("Đang xuất file...")
-        # run function to export file
-        xuat_all_combined()
-        """
-        This container is used to display the status of the export process.
-        It will show a message when the export is complete.
-        """
+        if submit_button:
+            # st.write(st.session_state.cb_export_lich_PK)
+            st.spinner("Đang xuất file...")
+            # run function to export file
+            xuat_all_combined()
+            """
+            This container is used to display the status of the export process.
+            It will show a message when the export is complete.
+            """
