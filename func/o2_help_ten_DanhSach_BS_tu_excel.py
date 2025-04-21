@@ -22,7 +22,7 @@ def xuLyTenDanhSachBS(full_lich, sheetName=sheetNamedefault):
     # drop first row and second row (row 0) because it is "code"
 
     # Drop the first two rows as they contain "code"
-    ten_danhSachBS = ten_danhSachBS.iloc[2:]
+    ten_danhSachBS = ten_danhSachBS.iloc[1:]
     
     # turn into dictionary with key = "nameBS", value = "msnv"
     ten_danhSachBS = ten_danhSachBS.set_index(ten_danhSachBS.columns[0])
