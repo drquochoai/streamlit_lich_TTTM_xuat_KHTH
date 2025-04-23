@@ -10,25 +10,34 @@ def xuLyTenDanhSachBS(full_lich, sheetName=sheetNamedefault):
     Extract data from the sheet "danhsachbacsi" and return a dictionary containing the "nameBS" and "msnv" from columns 1 and 2.
     """
     # get data of the sheet default phongKham
-    ten_danhSachBS = full_lich[sheetName]
+    ten_danhSachBSFull = full_lich[sheetName]
+
     # ten_danhSachBS: drop columns where the first row value is nan, use != 'nan' instead of dropna
-    ten_danhSachBS = ten_danhSachBS.loc[:, ten_danhSachBS.iloc[0].astype(str) != "nan"]
-    
+    ten_danhSachBSFull = ten_danhSachBSFull.loc[:, ten_danhSachBSFull.iloc[0].astype(str) != "nan"]
     
     # print(ten_danhSachBS)
     # set 2st row as header
-    ten_danhSachBS.columns = ten_danhSachBS.iloc[0]
+    ten_danhSachBSFull.columns = ten_danhSachBSFull.iloc[0]
     
     # drop first row and second row (row 0) because it is "code"
 
     # Drop the first two rows as they contain "code"
-    ten_danhSachBS = ten_danhSachBS.iloc[1:]
-    
-    # turn into dictionary with key = "nameBS", value = "msnv"
-    ten_danhSachBS = ten_danhSachBS.set_index(ten_danhSachBS.columns[0])
-    ten_danhSachBS = ten_danhSachBS[ten_danhSachBS.columns[0]].to_dict()
+    ten_danhSachBSFull = ten_danhSachBSFull.iloc[1:]
+    # now ten_danhSachBSFull has 3 columns: "tenbs" and "msnv" and "shortname"
+    # turn into dictionary with key = "nameBS", value = "msnv" and save to ten_danhSachBS
+    ten_danhSachBS = ten_danhSachBSFull.set_index("tenbs")["msnv"].to_dict()
+    # turn into dictionary with key = "shortname", value = "msnv" and save to ten_danhSachBS_shortname
+    ten_danhSachBS_shortname = ten_danhSachBSFull.set_index("shortname")["msnv"].to_dict()
+    # turn into dictionary with key = "shortname", value = "msnv" and save to ten_danhSachBS_shortname
+    ten_danhSachBS_tenbstheokhth = ten_danhSachBSFull.set_index("tenbs")["tenbstheokhth"].to_dict()
+    # turn into dictionary with key = "shortname", value = "msnv" and save to ten_danhSachBS_shortname
+    ten_danhSachBS_tenbstheokhth_msnv = ten_danhSachBSFull.set_index("tenbstheokhth")["msnv"].to_dict()
     # print(ten_danhSachBS)
     st.session_state.ten_danhSachBS = ten_danhSachBS
+    st.session_state.ten_danhSachBS_shortname = ten_danhSachBS_shortname
+    st.session_state.ten_danhSachBS_tenbstheokhth = ten_danhSachBS_tenbstheokhth
+    st.session_state.ten_danhSachBS_tenbstheokhth_msnv = ten_danhSachBS_tenbstheokhth_msnv
+    # st.write("ten_danhSachBS", st.session_state)
     return ten_danhSachBS
 
 if __name__ == "__main__":

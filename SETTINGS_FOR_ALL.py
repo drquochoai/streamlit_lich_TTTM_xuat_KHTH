@@ -24,9 +24,9 @@ SETTINGS = {
     ],
     "url": {
         "downloadFull": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTixq1k6_nQ7QVOnD5y2o_Ods5IC5LSA-iiVPs7qBFC5JcLizUkxp-oCTiSWhDQfGSSc7jodXnOYOIl/pub?output=xlsx",
-        "downloadDemo": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRHqvn0zlpmiuXOkf7jdH75iKugE-ZF2rvNT_Qq-xogt8i8LaXkVwur-8cpl10VJZlzd_0vfZa8yBe4/pub?output=xlsx",
+        "downloadDemo": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPuJ6tcj_con1MWtu7E7l1c1mooB_QKUxscc6my8Yxq3CdFXBJaNvj6e9E6EkzTyeWXLPPgXSwAvwi/pub?output=xlsx",
         "edit": "https://docs.google.com/spreadsheets/d/1qy4ibt5vkOH-qlXOHRoI79HzAkPmm5Cn5UdzKmKe-TE/edit",
-        "editDemo": "https://docs.google.com/spreadsheets/d/11RhhBdnpKx8AU_7McqxfCi5ogQI0RLdvhF2K-pT-VaU/edit?gid=1081127528#gid=1081127528"
+        "editDemo": "https://docs.google.com/spreadsheets/d/1szgbchE2Et8dHEGuaofT9JWBHsU9b2RloTOXUNWBiYE/edit?gid=774003233#gid=774003233"
     },
     "sheetName": {
         "phongKham": "🏥Tên PK theo KHTH",

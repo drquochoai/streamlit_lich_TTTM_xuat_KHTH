@@ -1,3 +1,4 @@
+from math import e
 from func.x1_u1_filtered_PK_theoyeucau import filtered_PK_theo_ten_file_KHTH
 import streamlit as st
 import pandas as pd
@@ -10,7 +11,7 @@ def xuat(tenFileDeXuatHienTai):
         Để riêng 1 sheet
     """
     # Hiển thị từng bước của các phép tính, cho debug dễ hơn
-    showStep = False
+    showStep = True
     # 1. Tạo biến mẹ chứa toàn bộ dữ liệu để xuất
     # if f"final_sheet_of_{tenFileDeXuatHienTai}" not in st.session_state:
     #     st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = pd.DataFrame(columns=["Thứ", "Ngày", "Giờ"])
@@ -70,7 +71,7 @@ def xuat(tenFileDeXuatHienTai):
     # AI 1 remove columns S
     all_CLS_data = all_CLS_data.drop(columns=["S"])
     if showStep:
-        st.markdown("AI remove columns S")
+        st.markdown("AI 1 remove columns S")
         st.write(all_CLS_data)
 
     # AI 2 from column 4 to the end, rename columns to name_KHTH of filtered_PK_theo_KHTH
@@ -84,7 +85,7 @@ def xuat(tenFileDeXuatHienTai):
         )
     # SHOW 2
     if showStep:
-        st.markdown("AI remove columns S")
+        st.markdown("AI 2 from column 4 to the end, rename columns to name_KHTH of filtered_PK_theo_KHTH")
         st.write(all_CLS_data)
     # END 2
 
@@ -117,7 +118,30 @@ def xuat(tenFileDeXuatHienTai):
         st.write(all_CLS_data)
     # END 2.9
 
+
     # AI 3 from columns 4 of all_CLS_data: add on the right of each column a new column name Mã BS, value is blank string 
+    def add_msnv_tenbacsi(row):
+        try:
+            # if str(row[col_name]).strip() != "" and str(row[col_name]) in st.session_state["ten_danhSachBS"]:
+            #     return st.session_state["ten_danhSachBS"][row[col_name]]
+            # else if str(row[col_name]).strip() contain "," inside it, then split by "," then return st.session_state["ten_danhSachBS_shortname"] and then join again by ","
+            #    else return ""
+            if str(row[col_name]).strip() != "":
+                if str(row[col_name]) in st.session_state["ten_danhSachBS"]:
+                    return st.session_state["ten_danhSachBS"][row[col_name]]
+                elif str(row[col_name]) in st.session_state["ten_danhSachBS_shortname"]:
+                    return st.session_state["ten_danhSachBS_shortname"][row[col_name]]
+                elif "," in str(row[col_name]):
+                # Split by ",", add "BS." to all elements of the list and then join again by ","
+                    return ", ".join([f"{st.session_state["ten_danhSachBS_shortname"][item.strip()]}" for item in str(row[col_name]).split(",")])
+                else:
+                    return ""
+            else:
+                return ""
+        except KeyError:
+            st.warning(f"KeyError: {col_name} not found in st.session_state['ten_danhSachBS']")
+            return ""
+
     num_cols = len(all_CLS_data.columns)
     # We need to process the original columns only, so we'll:
     # 1. Get the original column names up front
@@ -132,9 +156,9 @@ def xuat(tenFileDeXuatHienTai):
         # if row of col_name value is not blank, set value of column "Mã BS" to value of st.session_state["ten_"] get row of col_name value
         try:
             all_CLS_data["Mã BS " + col_name] = all_CLS_data.apply(
-            lambda row: st.session_state["ten_danhSachBS"][row[col_name]] if str(row[col_name]).strip() != "" else "",
-            axis=1
-        )
+                lambda row: add_msnv_tenbacsi(row),
+                axis=1
+            )
         except KeyError:
             st.warning(f"KeyError: {col_name} not found in st.session_state['ten_danhSachBS']")        
         
@@ -143,6 +167,46 @@ def xuat(tenFileDeXuatHienTai):
         st.write(all_CLS_data)
     # END 3
     
+    # AI 4: Each column from 4 to the end, check if value in lower is not contain ".", or not contain "bs", or not contain "," then set value of that cell to "BS." + value of that cell
+    # write docs for the function
+    
+    def fix_ten_bacsi(x):
+        """
+        Hàm fix_ten_bacsi thực hiện chuẩn hóa định dạng tên bác sĩ.
+        Tham số:
+            x: Dữ liệu đầu vào có thể là kiểu chuỗi.
+               Nếu x không phải là chuỗi hoặc là chuỗi rỗng sau khi loại bỏ khoảng trắng,
+               hàm trả về x không thay đổi.
+               Nếu x là chuỗi:
+                 - Nếu chuỗi không chứa dấu chấm ('.'), không chứa chuỗi 'bs' và không chứa dấu phẩy (','),
+                   hàm sẽ thêm tiền tố 'BS. ' vào trước chuỗi.
+                 - Nếu chuỗi chứa dấu phẩy (','), hàm sẽ tách chuỗi theo dấu phẩy,
+                   thêm 'BS. ' vào đầu mỗi đoạn sau khi loại bỏ khoảng trắng thừa,
+                   và nối lại các phần với nhau bằng dấu phẩy.
+                 - Trường hợp khác (đã có sẵn định dạng), trả về x ban đầu.
+        Trả về:
+            Chuỗi đã được chuẩn hóa định dạng tên bác sĩ hoặc giá trị x ban đầu nếu không phải chuỗi hợp lệ.
+        """
+        
+        if isinstance(x, str) and x.strip() != "":
+            if (("." in x.lower()) or ("bs" in x.lower())) and x in st.session_state["ten_danhSachBS_tenbstheokhth"]:
+                return st.session_state["ten_danhSachBS_tenbstheokhth"][x]
+            elif ("." not in x.lower()) and ("bs" not in x.lower()) and ("," not in x.lower()):
+                return "BS. " + x
+            elif ("," in x.lower()):
+                # Split by ",", add "BS." to all elements of the list and then join again by ","
+                return ", ".join([f"BS. {item.strip()}" for item in x.split(",")])
+            else:
+                return x
+        else:
+            return x
+    for col in all_CLS_data.columns[3:]:
+        if not col.startswith("Mã BS"):
+            all_CLS_data[col] = all_CLS_data[col].apply(lambda x: fix_ten_bacsi(x))
+    if showStep:
+        st.markdown("AI 4: Each column from 4 to the end, check if value in lower is not contain '.', or not contain 'bs', or not contain ',' then set value of that cell to 'BS.' + value of that cell")
+        st.write(all_CLS_data)
+
     # AI final - add all_CLS_data to st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"]
     st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = all_CLS_data
 
