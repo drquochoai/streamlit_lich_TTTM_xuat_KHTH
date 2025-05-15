@@ -11,7 +11,7 @@ def xuat(tenFileDeXuatHienTai):
                 BÁO ĐỘNG ĐỎ  ---  CODE BLUE 
     """
     # Hiển thị từng bước của các phép tính, cho debug dễ hơn
-    showStep = False
+    showStep = True
     # 1. Tạo biến mẹ chứa toàn bộ dữ liệu để xuất
     # if f"final_sheet_of_{tenFileDeXuatHienTai}" not in st.session_state:
     #     st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = pd.DataFrame(columns=["Thứ", "Ngày", "Giờ"])
