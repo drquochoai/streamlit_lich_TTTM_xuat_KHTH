@@ -3,6 +3,16 @@ import streamlit as st
 from func.o1_help_ten_PK_theo_KHTH import xuLyTenDanhSachPK
 from SETTINGS_FOR_ALL import SETTINGS
 from func.x1_u1_filtered_PK_theoyeucau import filtered_PK_theo_ten_file_KHTH
+import datetime
+
+
+def to_time(val):
+    if ":" in str(val):
+        h, m = str(val).split(":")
+        return f"{int(h):02d}:{int(m):02d}"
+    elif str(val).isdigit():
+        return f"{int(val):02d}:00"
+    return ""
 
 
 def xuatPhongKham(tenFileDeXuatHienTai):
@@ -61,25 +71,11 @@ def xuatPhongKham(tenFileDeXuatHienTai):
             return [0, 24]
         elif "-" in timestring:
             val1, val2 = timestring.split("-")
-            # print(val1)
-            # if val1, val2 not contain ":" return [int(val1) if val1.isdigit() else val1, int(val2) if val2.isdigit() else val2] else return val1, val2
-            if ":" in val1 or ":" in val2:
-                # print("gia tri", [str(val1), str(val2)])
-                return [str(val1), str(val2)]
-            # oneline return if val1.isdigit(): int(val1) else val1 and val2 same
-            else:
-                return [int(val1) if val1.isdigit() else val1, int(val2) if val2.isdigit() else val2]
+            # Always use to_time for both values
+            return [to_time(val1), to_time(val2)]
         else:
             return ["0*error", "0*error"]
 
-    # Hàm mapping Tên bác sĩ với mã bác sĩ
-    def map_bacsi(row):
-        # st.write("row", row)
-        ten_bac_si = row["Họ Tên Bác sĩ"]
-        # get value of "MSVN" in ten_danhSachBS
-        msvn = st.session_state.ten_danhSachBS[ten_bac_si]
-        # print("map_bacsi", st.session_state.ten_danhSachBS[ten_bac_si])
-        return msvn
     # 6. BIẾN LƯU TRỮ DỮ LIỆU TOÀN BỘ PK XUẤT RA
     merged_data_ALL_phongkham = pd.DataFrame()
 
@@ -146,7 +142,14 @@ def xuatPhongKham(tenFileDeXuatHienTai):
                             # lamda function that replace value of each row (as ten_bac_si) in merged_data_1_phongkham[tenPKTheoLich] "Họ Tên Bác sĩ" with st.session_state.ten_danhSachBS_tenbstheokhth[ten_bac_si]
                             
                             merged_data_1_phongkham[col_name] = merged_data_1_phongkham[col_name].apply(
-                                lambda ten_bac_si: st.session_state.ten_danhSachBS_tenbstheokhth.get(ten_bac_si, ten_bac_si)
+                                lambda ten_bac_si: (
+                                    st.session_state.ten_danhSachBS_tenbstheokhth.get(ten_bac_si)
+                                    if ten_bac_si in st.session_state.ten_danhSachBS_tenbstheokhth
+                                    else ", ".join([
+                                        st.session_state.ten_danhSachBS_shortname_tenbstheokhth.get(name.strip(), name.strip())
+                                        for name in ten_bac_si.split(",")
+                                    ])
+                                )
                             )
 
                             """
@@ -203,6 +206,21 @@ def xuatPhongKham(tenFileDeXuatHienTai):
             # merged_data_1_phongkham drop column ["Từ giờ"] = 0  and ["Đến giờ"] = 0
             merged_data_1_phongkham = merged_data_1_phongkham[
                 (merged_data_1_phongkham["Từ giờ"] != 0) & (merged_data_1_phongkham["Đến giờ"] != 0)]
+            # Loop through all rows in merged_data_1_phongkham and check if "Họ Tên Bác sĩ" is have ",", we will split it by "," and create new rows for each value, other columns will be the same but "Mã Bác sĩ" will be the value of that name st.session_state.ten_danhSachBS_tenbstheokhth_msnv.get("Họ Tên Bác sĩ", 0)
+            # Loop through all rows in merged_data_1_phongkham and check if "Họ Tên Bác sĩ" contains ","
+            expanded_rows = []
+            for idx, row in merged_data_1_phongkham.iterrows():
+                bacsi_names = str(row["Họ Tên Bác sĩ"]).split(",")
+                if len(bacsi_names) > 1:
+                    for name in bacsi_names:
+                        new_row = row.copy()
+                        name = name.strip()
+                        new_row["Họ Tên Bác sĩ"] = name
+                        new_row["Mã Bác sĩ"] = int(st.session_state.ten_danhSachBS_tenbstheokhth_msnv.get(name, 0))
+                        expanded_rows.append(new_row)
+                else:
+                    expanded_rows.append(row)
+            merged_data_1_phongkham = pd.DataFrame(expanded_rows)
 
             # merge tin to merged_data_ALL_phongkham
             merged_data_ALL_phongkham = pd.concat(

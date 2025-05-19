@@ -13,7 +13,7 @@ def xuat(tenFileDeXuatHienTai):
         Để riêng 1 sheet
     """
     # Hiển thị từng bước của các phép tính, cho debug dễ hơn
-    showStep = True
+    showStep = False
     # 1. Tạo biến mẹ chứa toàn bộ dữ liệu để xuất
     # if f"final_sheet_of_{tenFileDeXuatHienTai}" not in st.session_state:
     #     st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = pd.DataFrame(columns=["Thứ", "Ngày", "Giờ"])

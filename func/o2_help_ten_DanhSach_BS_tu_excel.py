@@ -32,11 +32,16 @@ def xuLyTenDanhSachBS(full_lich, sheetName=sheetNamedefault):
     ten_danhSachBS_tenbstheokhth = ten_danhSachBSFull.set_index("tenbs")["tenbstheokhth"].to_dict()
     # turn into dictionary with key = "shortname", value = "msnv" and save to ten_danhSachBS_shortname
     ten_danhSachBS_tenbstheokhth_msnv = ten_danhSachBSFull.set_index("tenbstheokhth")["msnv"].to_dict()
+
+    ten_danhSachBS_shortname_tenbstheokhth = ten_danhSachBSFull.set_index("shortname")["tenbstheokhth"].to_dict()
     # print(ten_danhSachBS)
     st.session_state.ten_danhSachBS = ten_danhSachBS
     st.session_state.ten_danhSachBS_shortname = ten_danhSachBS_shortname
     st.session_state.ten_danhSachBS_tenbstheokhth = ten_danhSachBS_tenbstheokhth
     st.session_state.ten_danhSachBS_tenbstheokhth_msnv = ten_danhSachBS_tenbstheokhth_msnv
+
+    # shortname theo khth
+    st.session_state.ten_danhSachBS_shortname_tenbstheokhth = ten_danhSachBS_shortname_tenbstheokhth
     # st.write("ten_danhSachBS", st.session_state)
     return ten_danhSachBS
 
