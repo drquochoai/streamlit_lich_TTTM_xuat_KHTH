@@ -31,6 +31,7 @@ SETTINGS = {
     "sheetName": {
         "phongKham": "🏥Tên PK theo KHTH",
         "danhSachBacSi": "✅Danh sách Bác sĩ (dropdown)",
+        "danhSachBacSiCLS": "✅#Danh sách Bác sĩ CLS",
     },
     "thuTuPhongCanLamSang": [
         "SIÊU ÂM TIM - MẠCH MÁU 1",

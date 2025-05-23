@@ -9,9 +9,9 @@ import datetime
 def to_time(val):
     if ":" in str(val):
         h, m = str(val).split(":")
-        return f"{int(h):02d}:{int(m):02d}"
+        return f"{int(h)}:{int(m):02d}"
     elif str(val).isdigit():
-        return f"{int(val):02d}:00"
+        return f"{int(val)}"
     return ""
 
 
@@ -151,6 +151,18 @@ def xuatPhongKham(tenFileDeXuatHienTai):
                                     ])
                                 )
                             )
+                            #  if tenfileDeXuatHienTai == "1.2 Lịch Cận lâm sàng" then change Tên bác sĩ to Tên bác sĩ CLS ten_danhSachBS_tenbstheokhth_toCLS
+                            if tenFileDeXuatHienTai == "1.2 Lịch Cận lâm sàng":
+                                merged_data_1_phongkham[col_name] = merged_data_1_phongkham[col_name].apply(
+                                    lambda ten_bac_si: (
+                                        st.session_state.ten_danhSachBS_tenbstheokhth_toCLS.get(ten_bac_si)
+                                        if ten_bac_si in st.session_state.ten_danhSachBS_tenbstheokhth_toCLS
+                                        else ", ".join([
+                                            st.session_state.ten_danhSachBS_shortname_tenbstheokhth.get(name.lstrip(), name.lstrip())
+                                            for name in ten_bac_si.split(",")
+                                        ])
+                                    )
+                                )
 
                             """
                             Xử lý cột Ngày:
@@ -214,7 +226,8 @@ def xuatPhongKham(tenFileDeXuatHienTai):
                 if len(bacsi_names) > 1:
                     for name in bacsi_names:
                         new_row = row.copy()
-                        name = name.strip()
+                        # name if have first space remove, if have last space keep
+                        name = name.lstrip()
                         new_row["Họ Tên Bác sĩ"] = name
                         new_row["Mã Bác sĩ"] = int(st.session_state.ten_danhSachBS_tenbstheokhth_msnv.get(name, 0))
                         expanded_rows.append(new_row)
