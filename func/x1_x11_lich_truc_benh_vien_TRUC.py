@@ -13,7 +13,7 @@ def xuat(tenFileDeXuatHienTai):
         Để riêng 1 sheet
     """
     # Hiển thị từng bước của các phép tính, cho debug dễ hơn
-    showStep = False
+    showStep = True
     # 1. Tạo biến mẹ chứa toàn bộ dữ liệu để xuất
     # if f"final_sheet_of_{tenFileDeXuatHienTai}" not in st.session_state:
     #     st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = pd.DataFrame(columns=["Thứ", "Ngày", "Giờ"])
@@ -72,7 +72,7 @@ def xuat(tenFileDeXuatHienTai):
         st.write(all_CLS_data)
 
     # AI 1 remove columns S
-    all_CLS_data = all_CLS_data.drop(columns=["S"])
+    all_CLS_data = all_CLS_data.drop(columns=["S"], errors="ignore")
     if showStep:
         st.markdown("AI remove columns S (số thứ tự)")
         st.write(all_CLS_data)
@@ -123,7 +123,8 @@ def xuat(tenFileDeXuatHienTai):
     for each_PK in range(0, len(filtered_PK_theo_KHTH)):
         tenPKCuaKHTH = filtered_PK_theo_KHTH[each_PK]['name_KHTH']
         # Lấy table chủ Nhật từ all_CLS_data
-        caccot = all_CLS_data[[all_CLS_data.columns[0], all_CLS_data.columns[1], all_CLS_data.columns[2], tenPKCuaKHTH]]
+        columns_needed = ["Thứ", "Ngày", "Giờ", tenPKCuaKHTH]
+        caccot = all_CLS_data[[col for col in columns_needed if col in all_CLS_data.columns]]
         getAndMergeCN = process_dataframe_Merge_Truc_co_SangChieu(caccot, tenPKCuaKHTH)
         # AI merge getAndMergeCN to all_CLS_data, merge có xử lý tên bác sĩ và ngày đêm
         all_CLS_data = merge_dataframes_tenBS_NgayDem(all_CLS_data, getAndMergeCN, merge_cols=["Thứ", "Ngày", "Giờ"])
@@ -135,7 +136,8 @@ def xuat(tenFileDeXuatHienTai):
     # AI 6: drop row Thứ CN and Giờ is S
     all_CLS_data = all_CLS_data[~((all_CLS_data["Giờ"] == "S"))]
     # AI 7: drop column "Giờ"
-    all_CLS_data = all_CLS_data.drop(columns=["Giờ"])
+    if "Giờ" in all_CLS_data.columns:
+        all_CLS_data = all_CLS_data.drop(columns=["Giờ"])
     # AI final - add all_CLS_data to st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"]
     st.session_state[f"final_sheet_of_{tenFileDeXuatHienTai}"] = all_CLS_data
     if showStep:

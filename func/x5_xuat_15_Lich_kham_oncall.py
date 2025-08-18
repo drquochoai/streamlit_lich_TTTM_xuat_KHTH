@@ -66,7 +66,7 @@ def xuat(tenFileDeXuatHienTai):
         st.write(all_CLS_data)
 
     # AI 1 remove columns S
-    all_CLS_data = all_CLS_data.drop(columns=["S"])
+    all_CLS_data = all_CLS_data.drop(columns=["S"], errors="ignore")
     if showStep:
         st.markdown("AI remove columns S")
         st.write(all_CLS_data)
