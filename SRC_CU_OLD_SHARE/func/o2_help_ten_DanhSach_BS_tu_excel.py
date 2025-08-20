@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import re
 from SETTINGS_FOR_ALL import SETTINGS
 
 sheetNamedefault = SETTINGS.get("sheetName", {}).get("danhSachBacSi")
@@ -47,22 +46,6 @@ def xuLyTenDanhSachBS(full_lich, sheetName=sheetNamedefault):
 
     # shortname theo khth
     st.session_state.ten_danhSachBS_shortname_tenbstheokhth = ten_danhSachBS_shortname_tenbstheokhth
-    
-    # Build normalized lookup dictionaries for robust matching
-    def _norm(s: str) -> str:
-        if s is None:
-            return ""
-        if not isinstance(s, str):
-            s = str(s)
-        s = s.strip()
-        s = re.sub(r"\s+", " ", s)
-        return s.lower()
-
-    # Normalized versions
-    st.session_state.ten_danhSachBS_tenbstheokhth_norm = { _norm(k): v for k, v in ten_danhSachBS_tenbstheokhth.items() if isinstance(k, str) }
-    st.session_state.ten_danhSachBS_shortname_tenbstheokhth_norm = { _norm(k): v for k, v in ten_danhSachBS_shortname_tenbstheokhth.items() if isinstance(k, str) }
-    st.session_state.ten_danhSachBS_tenbstheokhth_toCLS_norm = { _norm(k): v for k, v in ten_danhSachBS_tenbstheokhth_toCLS.items() if isinstance(k, str) }
-    st.session_state.ten_danhSachBS_tenbstheokhth_msnv_norm = { _norm(k): v for k, v in ten_danhSachBS_tenbstheokhth_msnv.items() if isinstance(k, str) }
     # st.write("ten_danhSachBS", st.session_state)
     return ten_danhSachBS
 

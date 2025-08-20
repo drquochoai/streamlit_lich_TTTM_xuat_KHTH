@@ -20,14 +20,7 @@ url = load_url_theo_demo()
 
 # $ TẢI FILE EXCEL VỀ MÁY
 from func.a1_1_load_excel_from_url import load_excel_data_from_url
-try:
-    st.session_state.full_lich = load_excel_data_from_url(url)
-except Exception as e:
-    st.error(
-        f"Không tải được file Excel. Chi tiết: {e}\n"
-        "- Kiểm tra mạng hoặc thiết lập SETTINGS['url']['localFallback'] trỏ tới file .xlsx local."
-    )
-    st.stop()
+st.session_state.full_lich = load_excel_data_from_url(url)
 
 
 # HIỂN THỊ MENU CÁCH XUẤT FILE LỊCH TTTM

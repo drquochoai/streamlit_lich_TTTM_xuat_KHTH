@@ -1,3 +1,4 @@
+from numpy import add
 import streamlit as st
 from SETTINGS_FOR_ALL import SETTINGS
 from func.x0_1_xuat_all_combined import xuat_all_combined
@@ -17,8 +18,8 @@ def load_sheet_names_of_excel():
     with col2:
         add_click_button(SETTINGS['url']['downloadFull'], "Tải file")
     with col3:
-        st.button("🔄 RELOAD EXCEL", on_click=lambda: clear_cache_rerun(),
-                  type="primary")
+        st.button("RELOAD EXCEL", on_click=lambda: clear_cache_rerun(),
+                  type="primary", icon=":material/frame_reload:")
 
     sheet_names_only = []
     if "sheet_names" in st.session_state:

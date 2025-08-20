@@ -13,4 +13,4 @@ def clear_cache_rerun():
     st.cache_resource.clear()
     
     # Force a rerun
-    raise RerunException(RerunData())
+    RerunException(RerunData())
