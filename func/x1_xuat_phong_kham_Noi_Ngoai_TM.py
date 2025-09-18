@@ -4,6 +4,7 @@ from func.o1_help_ten_PK_theo_KHTH import xuLyTenDanhSachPK
 from SETTINGS_FOR_ALL import SETTINGS
 from func.x1_u1_filtered_PK_theoyeucau import filtered_PK_theo_ten_file_KHTH
 import datetime
+import re
 
 
 def to_time(val):
@@ -139,30 +140,48 @@ def xuatPhongKham(tenFileDeXuatHienTai):
                             """
                         elif col_name == "Họ Tên Bác sĩ":
                             merged_data_1_phongkham[col_name] = merged_data_1_phongkham[tenPKTheoLich]
-                            # lamda function that replace value of each row (as ten_bac_si) in merged_data_1_phongkham[tenPKTheoLich] "Họ Tên Bác sĩ" with st.session_state.ten_danhSachBS_tenbstheokhth[ten_bac_si]
-                            
-                            merged_data_1_phongkham[col_name] = merged_data_1_phongkham[col_name].apply(
-                                lambda ten_bac_si: (
-                                    st.session_state.ten_danhSachBS_tenbstheokhth.get(ten_bac_si)
-                                    if ten_bac_si in st.session_state.ten_danhSachBS_tenbstheokhth
-                                    else ", ".join([
-                                        st.session_state.ten_danhSachBS_shortname_tenbstheokhth.get(name.strip(), name.strip())
-                                        for name in ten_bac_si.split(",")
-                                    ])
-                                )
-                            )
+                            # Replace doctor names to KHTH names using normalized lookup; fallback to shortname mapping per token
+                            def _norm(s: str) -> str:
+                                if s is None:
+                                    return ""
+                                if not isinstance(s, str):
+                                    s = str(s)
+                                s = s.strip()
+                                s = re.sub(r"\s+", " ", s)
+                                return s.lower()
+
+                            def _map_to_khth(value: str) -> str:
+                                if not isinstance(value, str):
+                                    return value
+                                norm = _norm(value)
+                                khth = st.session_state.get("ten_danhSachBS_tenbstheokhth_norm", {}).get(norm)
+                                if khth:
+                                    return khth
+                                # Split by comma and map each piece
+                                parts = [p.strip() for p in value.split(",") if p.strip()]
+                                mapped = [
+                                    st.session_state.get("ten_danhSachBS_shortname_tenbstheokhth", {}).get(p, p)
+                                    for p in parts
+                                ]
+                                return ", ".join(mapped)
+
+                            merged_data_1_phongkham[col_name] = merged_data_1_phongkham[col_name].apply(_map_to_khth)
                             #  if tenfileDeXuatHienTai == "1.2 Lịch Cận lâm sàng" then change Tên bác sĩ to Tên bác sĩ CLS ten_danhSachBS_tenbstheokhth_toCLS
                             if tenFileDeXuatHienTai == "1.2 Lịch Cận lâm sàng":
-                                merged_data_1_phongkham[col_name] = merged_data_1_phongkham[col_name].apply(
-                                    lambda ten_bac_si: (
-                                        st.session_state.ten_danhSachBS_tenbstheokhth_toCLS.get(ten_bac_si)
-                                        if ten_bac_si in st.session_state.ten_danhSachBS_tenbstheokhth_toCLS
-                                        else ", ".join([
-                                            st.session_state.ten_danhSachBS_shortname_tenbstheokhth.get(name.lstrip(), name.lstrip())
-                                            for name in ten_bac_si.split(",")
-                                        ])
-                                    )
-                                )
+                                def _map_to_cls(value: str) -> str:
+                                    if not isinstance(value, str):
+                                        return value
+                                    norm = _norm(value)
+                                    cls_name = st.session_state.get("ten_danhSachBS_tenbstheokhth_toCLS_norm", {}).get(norm)
+                                    if cls_name:
+                                        return cls_name
+                                    parts = [p.strip() for p in value.split(",") if p.strip()]
+                                    mapped = [
+                                        st.session_state.get("ten_danhSachBS_shortname_tenbstheokhth", {}).get(p.lstrip(), p.lstrip())
+                                        for p in parts
+                                    ]
+                                    return ", ".join(mapped)
+                                merged_data_1_phongkham[col_name] = merged_data_1_phongkham[col_name].apply(_map_to_cls)
 
                             """
                             Xử lý cột Ngày:
@@ -196,7 +215,11 @@ def xuatPhongKham(tenFileDeXuatHienTai):
                         elif col_name == "Mã Bác sĩ":
                             # set value of column "Mã Bác sĩ" = value of "Họ Tên Bác sĩ" in dictionary st.session_state.ten_danhSachBS[ten_bac_si] as number
                             merged_data_1_phongkham[col_name] = merged_data_1_phongkham["Họ Tên Bác sĩ"].apply(
-                                lambda ten: int(st.session_state.ten_danhSachBS_tenbstheokhth_msnv.get(ten, 0))
+                                lambda ten: int(
+                                    st.session_state.get("ten_danhSachBS_tenbstheokhth_msnv", {}).get(ten,
+                                        st.session_state.get("ten_danhSachBS_tenbstheokhth_msnv_norm", {}).get(_norm(ten), 0)
+                                    )
+                                )
                             )
                                 
 
