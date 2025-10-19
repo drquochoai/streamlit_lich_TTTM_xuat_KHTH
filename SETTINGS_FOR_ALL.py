@@ -3,7 +3,7 @@ SETTINGS = {
     "cauTrucCotFilePhongKhamGuiKHTH": [
         {
             "col": "Chi nhánh",
-            "value": "Phòng khám Đa Khoa Tâm Anh Quận 7"
+            "value": "Bệnh Viện Đa Khoa Tâm Anh Tân Bình"
         },
         {
             "col": "Chuyên Khoa",
@@ -19,12 +19,14 @@ SETTINGS = {
         {"col": "Mã Bác sĩ"},
         {
             "col": "Site",
-            "value": "Phòng khám Quận 7"
+            "value": "Tâm Anh Tân Bình"
         },
     ],
     "url": {
-        "downloadFull": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTn9d7E2Lv540I4qp38oDZ-GYkiJzaACojXNmgFpjS54eMITM3ttDsQlcfOGpx5bdWEkDBSfTg1KE7t/pub?output=xlsx",
-        "edit": "https://docs.google.com/spreadsheets/d/1WabbWHCrNsAc7pwouuomyW7wObdLTZSRLOoN1qQgp8A/edit",
+        "downloadFull": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTixq1k6_nQ7QVOnD5y2o_Ods5IC5LSA-iiVPs7qBFC5JcLizUkxp-oCTiSWhDQfGSSc7jodXnOYOIl/pub?output=xlsx",
+        "downloadDemo": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPuJ6tcj_con1MWtu7E7l1c1mooB_QKUxscc6my8Yxq3CdFXBJaNvj6e9E6EkzTyeWXLPPgXSwAvwi/pub?output=xlsx",
+        "edit": "https://docs.google.com/spreadsheets/d/1qy4ibt5vkOH-qlXOHRoI79HzAkPmm5Cn5UdzKmKe-TE/edit",
+        "editDemo": "https://docs.google.com/spreadsheets/d/1szgbchE2Et8dHEGuaofT9JWBHsU9b2RloTOXUNWBiYE/edit?gid=774003233#gid=774003233"
     },
     "sheetName": {
         "phongKham": "🏥Tên PK theo KHTH",
