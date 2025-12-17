@@ -1,4 +1,5 @@
 import streamlit as st
+import unicodedata
 from SETTINGS_FOR_ALL import SETTINGS
 from func.x0_1_xuat_all_combined import xuat_all_combined
 
@@ -24,8 +25,11 @@ def load_sheet_names_of_excel():
     if "sheet_names" in st.session_state:
         # st.write(st.session_state)
         for name in st.session_state.sheet_names:
-            if name.lower().startswith("tháng") and "$" not in name.lower():
-                sheet_names_only.append(name)       
+            # Normalize and trim name to avoid hidden/unicode whitespace or BOM issues
+            norm = unicodedata.normalize("NFC", name).strip().lower()
+            # Accept common variants (with/without diacritics). Also ignore internal excel temp sheets containing '$'
+            if (norm.startswith("tháng") or norm.startswith("thang")) and "$" not in norm:
+                sheet_names_only.append(name)
     else: 
         clear_cache_rerun()
 
